@@ -1,0 +1,11 @@
+.idea
+admin*
+token*
+__pycache__
+data
+.ipynb_checkpoints
+*.ini
+tmp
+*.session
+*.log
+patches

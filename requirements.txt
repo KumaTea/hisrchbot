@@ -1,0 +1,12 @@
+# conda
+
+pyrogram
+apscheduler
+uvloop; sys_platform != 'win32'
+
+
+# pip
+
+# never install via conda!!!
+# conda installs the server itself, not the SDK
+meilisearch
