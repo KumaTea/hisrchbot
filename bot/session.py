@@ -2,7 +2,6 @@ import logging
 import meilisearch
 import configparser
 from pyrogram import Client
-from bot.store import TextMsgStore
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 
@@ -25,5 +24,4 @@ meili = meilisearch.Client(
     config['meili']['api_key']
 )
 
-scheduler = AsyncIOScheduler()
-text_store = TextMsgStore()
+scheduler = AsyncIOScheduler(misfire_grace_time=60, timezone='Asia/Shanghai')

@@ -1,17 +1,25 @@
 import os
 import pickle
-import logging  # bot.session imported bot.store
-from pyrogram.types import Message
-from common.data import msg_data_dir, GROUP_MSG_LIMIT, TRUSTED_GROUP_MSG_LIMIT
-from dataclasses import dataclass
 from typing import Optional
+from datetime import datetime
+from bot.session import logging
+from dataclasses import dataclass
+from pyrogram.types import Message
 from common.local import trusted_group
+from common.data import msg_data_dir, GROUP_MSG_LIMIT, TRUSTED_GROUP_MSG_LIMIT
 
 
 @dataclass
 class TextMessage:
     id: int
     text: str
+
+
+@dataclass
+class ChatTimeInfo:
+    chat_id: int
+    last_msg_time: datetime = None
+    last_index_time: datetime = None
 
 
 def get_text_message(msg: Message) -> Optional[TextMessage]:
@@ -21,7 +29,7 @@ def get_text_message(msg: Message) -> Optional[TextMessage]:
     return None
 
 
-class TextMsgStore:
+class MsgTextStore:
     def __init__(self):
         self.msgs = {}
         self.load()
@@ -133,3 +141,44 @@ class TextMsgStore:
             with open(f'{msg_data_dir}/msg.p', 'rb') as f:
                 self.msgs = pickle.load(f)
             logging.info(f'[bot.store]\tLoaded {len(self.msgs)} messages from file')
+
+
+class MsgTimeStore:
+    def __init__(self):
+        self.data = {}
+        self.load()
+
+    def init_chat(self, chat_id: int) -> None:
+        if chat_id not in self.data:
+            self.data[chat_id] = ChatTimeInfo(chat_id)
+
+    def update_msg_time(self, chat_id: int, msg_time: datetime) -> None:
+        self.init_chat(chat_id)
+        self.data[chat_id].last_msg_time = msg_time
+
+    def update_index_time(self, chat_id: int, index_time: datetime) -> None:
+        self.init_chat(chat_id)
+        self.data[chat_id].last_index_time = index_time
+
+    def query(self, chat_id: int) -> ChatTimeInfo:
+        if chat_id in self.data:
+            return self.data[chat_id]
+        return ChatTimeInfo(chat_id)
+
+    def delete(self, chat_id: int) -> None:
+        if chat_id in self.data:
+            del self.data[chat_id]
+
+    def save(self) -> None:
+        with open(f'{msg_data_dir}/time.p', 'wb') as f:
+            pickle.dump(self.data, f)
+
+    def load(self) -> None:
+        if os.path.isfile(f'{msg_data_dir}/time.p'):
+            with open(f'{msg_data_dir}/time.p', 'rb') as f:
+                self.data = pickle.load(f)
+            logging.info(f'[bot.store]\tLoaded {len(self.data)} time data from file')
+
+
+text_store = MsgTextStore()
+time_store = MsgTimeStore()
