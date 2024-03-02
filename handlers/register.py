@@ -16,11 +16,11 @@ def register_handlers():
     # group messages
     bot.add_handler(MessageHandler(save_msg, filters.group))
     bot.add_handler(EditedMessageHandler(update_msg, filters.group))
-    bot.add_handler(DeletedMessagesHandler(delete_msgs))
+    bot.add_handler(DeletedMessagesHandler(delete_msgs, filters.group))
 
     # private commands
-    bot.add_handler(MessageHandler(command_force_update, filters.command(['force_update'])))
-    bot.add_handler(MessageHandler(command_debug_info, filters.command(['debug_info'])))
+    bot.add_handler(MessageHandler(command_force_update, filters.command(['force_update']) & filters.private))
+    bot.add_handler(MessageHandler(command_debug_info, filters.command(['debug_info']) & filters.private))
 
     logging.info("[Bot] Handlers registered.")
 
