@@ -2,7 +2,7 @@ import asyncio
 import logging
 from bot.session import meili
 from datetime import datetime
-from search.tools import until_succeeded
+from search.tools import until_done
 from bot.store import text_store, time_store
 from common.data import INDEX_INTERVAL, STALE_CHAT_TIME
 
@@ -49,10 +49,10 @@ async def update_chat_index(chat_id: int) -> None:
         return None
     index = meili.index(chat_id)
     del_task = index.delete_all_documents()
-    await until_succeeded(del_task)
+    await until_done(del_task)
 
     add_task = index.add_documents(chat_msgs_json)
-    await until_succeeded(add_task)
+    await until_done(add_task)
 
     time_store.update_index_time(chat_id, datetime.now())
     logging.info(f'Updated index for chat {chat_id}')

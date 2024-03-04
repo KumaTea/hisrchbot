@@ -30,3 +30,4 @@ def register_jobs():
     # done at index time
     scheduler.add_job(update_indexes, 'cron', minute=0)
     scheduler.add_job(clean_stale, 'cron', hour=12, minute=34)
+    scheduler.start()
