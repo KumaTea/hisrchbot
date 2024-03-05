@@ -2,20 +2,10 @@ from pyrogram import Client
 from typing import Optional
 from pyrogram.types import Chat
 from bot.auth import ensure_auth
+from func.tools import get_content
 from pyrogram.types import Message
 from search.core import search_core
 from common.data import MAX_RESULT_LEN
-
-
-def get_content(message: Message) -> Optional[str]:
-    text = message.text
-    content_index = text.find(' ')
-    # reply = message.reply_to_message
-    if content_index == -1:
-        # no text
-        # if not reply:
-        return None
-    return text[content_index + 1:]
 
 
 def get_message_link(chat: Chat, msg_id: int) -> str:

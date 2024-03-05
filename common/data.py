@@ -38,7 +38,8 @@ enter_group_zh = (
     '本 bot 每小时索引一次数据，请不要着急搜索。'
     '\n'
     '会记录的消息：正常文本，媒体备注\n'
-    '不记录的消息：bot 命令，bot 回复，代码，小作文，全域封禁及大会员消息'
+    '不记录的消息：用户的 bot 命令，代码，小作文，全域封禁及大会员消息\n'
+    '无法记录的消息：bot 发言，无文字消息，非常规文本 (如投票)\n'
 )
 
 unknown_message = "I can't understand your message or command. You may try /help."
