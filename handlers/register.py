@@ -1,7 +1,7 @@
 import logging
 from pyrogram import filters
 from handlers.functions import *
-from search.index import clean_stale
+from search.clean import clean_stale
 from bot.session import bot, scheduler
 from search.index import update_indexes
 from handlers.messages import save_msg, update_msg, delete_msgs

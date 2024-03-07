@@ -20,6 +20,8 @@ class ChatTimeInfo:
     chat_id: int
     last_msg_time: datetime = None
     last_index_time: datetime = None
+    last_trigger_time: datetime = datetime.now()
+    trigger_informed: bool = False
 
 
 def get_text_message(msg: Message) -> Optional[TextMessage]:
@@ -160,6 +162,11 @@ class MsgTimeStore:
         self.init_chat(chat_id)
         self.data[chat_id].last_index_time = index_time
 
+    def trigger(self, chat_id: int) -> None:
+        self.init_chat(chat_id)
+        self.data[chat_id].last_trigger_time = datetime.now()
+        self.data[chat_id].trigger_informed = False
+
     def query(self, chat_id: int) -> ChatTimeInfo:
         if chat_id in self.data:
             return self.data[chat_id]
@@ -173,11 +180,29 @@ class MsgTimeStore:
         with open(f'{msg_data_dir}/time.p', 'wb') as f:
             pickle.dump(self.data, f)
 
+    # def patch(self) -> None:
+    #     if not self.data:
+    #         return None
+    #     first_chat = list(self.data.keys())[0]
+    #     first_info = self.data[first_chat]
+    #     if set(first_info.__annotations__) != set(ChatTimeInfo.__annotations__):
+    #         logging.warning(f'[bot.store]\tPatching time data')
+    #         chat_ids = list(self.data.keys())
+    #         for chat_id in chat_ids:
+    #             self.data[chat_id] = ChatTimeInfo(
+    #                 chat_id=chat_id,
+    #                 last_msg_time=getattr(self.data[chat_id], 'last_msg_time', None),
+    #                 last_index_time=getattr(self.data[chat_id], 'last_index_time', None),
+    #                 last_trigger_time=getattr(self.data[chat_id], 'last_trigger_time', datetime.now())
+    #             )
+    #         self.save()
+
     def load(self) -> None:
         if os.path.isfile(f'{msg_data_dir}/time.p'):
             with open(f'{msg_data_dir}/time.p', 'rb') as f:
                 self.data = pickle.load(f)
             logging.info(f'[bot.store]\tLoaded {len(self.data)} time data from file')
+            # self.patch()
 
 
 text_store = MsgTextStore()

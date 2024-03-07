@@ -3,29 +3,8 @@ import logging
 from bot.session import meili
 from datetime import datetime
 from search.tools import until_done
+from common.data import INDEX_INTERVAL
 from bot.store import text_store, time_store
-from common.data import INDEX_INTERVAL, STALE_CHAT_TIME
-
-
-def clean_stale() -> None:
-    chat_ids_a = text_store.msgs.keys()
-    chat_ids_b = time_store.data.keys()
-    if set(chat_ids_a) != set(chat_ids_b):
-        logging.error('text_store is not sync with time_store!')
-        diff_a = set(chat_ids_a) - set(chat_ids_b)
-        diff_b = set(chat_ids_b) - set(chat_ids_a)
-        logging.error(f'{diff_a=}, {diff_b=}')
-
-    for chat_id in chat_ids_a:
-        chat_time = time_store.query(chat_id)
-        last_msg_time = chat_time.last_msg_time
-        if last_msg_time:
-            if (datetime.now() - last_msg_time).seconds < STALE_CHAT_TIME:
-                continue
-        text_store.clear_chat(chat_id)
-        time_store.delete(chat_id)
-        meili.delete_index(chat_id)
-        logging.warning(f'Clean stale chat {chat_id}')
 
 
 def need_update(chat_id: int) -> bool:
