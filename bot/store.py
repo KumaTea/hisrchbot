@@ -20,7 +20,7 @@ class ChatTimeInfo:
     chat_id: int
     last_msg_time: datetime = None
     last_index_time: datetime = None
-    last_trigger_time: datetime = datetime.now()
+    last_trigger_time: datetime =None
     trigger_informed: bool = False
 
 
@@ -33,7 +33,13 @@ def get_text_message(msg: Message) -> Optional[TextMessage]:
 
 class MsgTextStore:
     def __init__(self):
-        self.msgs = {}
+        self.msgs: dict[
+            int,  # chat_id
+            dict[
+                int,  # msg_id
+                TextMessage
+            ]
+        ] = {}
         self.load()
 
     def raw_add_msg(self, chat_id: int, msg_id: int, text: str) -> None:
@@ -147,7 +153,10 @@ class MsgTextStore:
 
 class MsgTimeStore:
     def __init__(self):
-        self.data = {}
+        self.data: dict[
+            int,  # chat_id
+            ChatTimeInfo
+        ] = {}
         self.load()
 
     def init_chat(self, chat_id: int) -> None:
@@ -197,12 +206,26 @@ class MsgTimeStore:
     #             )
     #         self.save()
 
+    def patch_last_trigger_time(self) -> None:
+        if not self.data:
+            return None
+        patched = 0
+        chat_ids = list(self.data.keys())
+        for chat_id in chat_ids:
+            if not self.data[chat_id].last_trigger_time:
+                self.data[chat_id].last_trigger_time = datetime.now()
+                logging.warning(f'[bot.store]\tPatching last_trigger_time for chat {chat_id}')
+                patched += 1
+        if patched:
+            self.save()
+
     def load(self) -> None:
         if os.path.isfile(f'{msg_data_dir}/time.p'):
             with open(f'{msg_data_dir}/time.p', 'rb') as f:
                 self.data = pickle.load(f)
             logging.info(f'[bot.store]\tLoaded {len(self.data)} time data from file')
             # self.patch()
+            self.patch_last_trigger_time()
 
 
 text_store = MsgTextStore()

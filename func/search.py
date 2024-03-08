@@ -6,6 +6,7 @@ from func.tools import get_content
 from pyrogram.types import Message
 from search.core import search_core
 from common.data import MAX_RESULT_LEN
+from bot.store import time_store
 
 
 def get_message_link(chat: Chat, msg_id: int) -> str:
@@ -68,6 +69,7 @@ async def search(message: Message, exact: bool = True) -> Optional[Message]:
         text += f'{i}. {result}\n'
         i += 1
 
+    time_store.trigger(chat_id)
     return await message.reply_text(text, disable_web_page_preview=True)
 
 
