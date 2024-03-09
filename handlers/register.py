@@ -12,6 +12,7 @@ def register_handlers():
     # group commands
     bot.add_handler(MessageHandler(command_search, filters.command(['search', 's']) & filters.group))
     bot.add_handler(MessageHandler(command_fuzzy, filters.command(['fuzzy']) & filters.group))
+    bot.add_handler(MessageHandler(command_unindex, filters.command(['unindex']) & filters.group))
 
     # group messages
     bot.add_handler(MessageHandler(save_msg, filters.group))

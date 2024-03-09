@@ -2,11 +2,12 @@ from pyrogram import Client
 from typing import Optional
 from pyrogram.types import Chat
 from bot.auth import ensure_auth
+from bot.store import time_store
 from func.tools import get_content
 from pyrogram.types import Message
 from search.core import search_core
 from common.data import MAX_RESULT_LEN
-from bot.store import time_store
+from search.clean import is_remedial_trigger
 
 
 def get_message_link(chat: Chat, msg_id: int) -> str:
@@ -27,13 +28,15 @@ def format_result(term: str, result: str, msg_link: str):
             return f'[{result[:MAX_RESULT_LEN-1]}…]({msg_link})'
         return f'[{result}]({msg_link})'
 
-    if len(result) > MAX_RESULT_LEN:
-        start_index = max(0, index - (MAX_RESULT_LEN//2 - 1))
-        end_index = min(len(result), index + (MAX_RESULT_LEN//2 - 1))
+    original_len = len(result)
+    if original_len > MAX_RESULT_LEN:
+        padding_len = max(0, (MAX_RESULT_LEN - len(term)) // 2 - 1)
+        start_index = max(0, index - padding_len)
+        end_index = min(original_len, index + len(term) + padding_len)
         result = f'{result[start_index:end_index]}'
         if start_index:
             result = f'…{result}'
-        if end_index < len(result):
+        if end_index < original_len:
             result = f'{result}…'
     return result.replace(
         term,
@@ -69,7 +72,8 @@ async def search(message: Message, exact: bool = True) -> Optional[Message]:
         text += f'{i}. {result}\n'
         i += 1
 
-    time_store.trigger(chat_id)
+    if not is_remedial_trigger(chat_id):
+        time_store.trigger(chat_id)
     return await message.reply_text(text, disable_web_page_preview=True)
 
 

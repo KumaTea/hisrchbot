@@ -45,3 +45,17 @@ async def clean_stale() -> None:
                 # don't know if this works
                 time_store.data[chat_id].trigger_informed = True
                 await bot.send_message(chat_id, '本 bot 已至少半个月未被使用，为减轻服务器压力，即将离开本群。')
+
+
+def is_remedial_trigger(chat_id: int) -> bool:
+    if chat_id not in time_store.data:
+        return False
+    # chat_time = time_store.query(chat_id)
+    chat_time = time_store.data[chat_id]
+    trigger_informed = chat_time.trigger_informed
+    if not trigger_informed:
+        return False
+    last_trigger_time = chat_time.last_trigger_time
+    if STALE_CHAT_TIME // 2 < (datetime.now() - last_trigger_time).seconds < STALE_CHAT_TIME // 2 + 60 * 60 * 24:
+        return True
+    return False

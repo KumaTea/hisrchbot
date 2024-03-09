@@ -24,8 +24,7 @@ def is_valid_msg(message: Message) -> bool:
     entities = message.entities or message.caption_entities
     if entities:
         for entity in entities:
-            # if entity.type in [MessageEntityType.PRE]:
-            if entity.type == MessageEntityType.PRE:
+            if entity.type in [MessageEntityType.PRE, MessageEntityType.CUSTOM_EMOJI]:
                 return False
     return True
 

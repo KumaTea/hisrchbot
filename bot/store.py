@@ -20,7 +20,7 @@ class ChatTimeInfo:
     chat_id: int
     last_msg_time: datetime = None
     last_index_time: datetime = None
-    last_trigger_time: datetime =None
+    last_trigger_time: datetime = None
     trigger_informed: bool = False
 
 
@@ -60,7 +60,7 @@ class MsgTextStore:
         if text_msg:
             self.msgs[chat_id][msg_id] = text_msg
     
-    def delete_msg(self, msg: Message) -> None:
+    def delete_msg(self, msg: Message) -> Optional[bool]:
         try:
             chat_id = msg.chat.id
             msg_id = msg.id
@@ -69,6 +69,7 @@ class MsgTextStore:
         if chat_id in self.msgs and msg_id in self.msgs[chat_id]:
             del self.msgs[chat_id][msg_id]
             logging.info(f'[bot.store]\tDeleting message {msg_id} from chat {chat_id}')
+            return True
 
     def update_msg(self, msg: Message) -> None:
         text = msg.text or msg.caption
