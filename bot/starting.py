@@ -1,7 +1,7 @@
 import os
 import logging
 from common.data import msg_data_dir
-from handlers.register import register_handlers, register_jobs
+from handlers.register import register_jobs, register_handlers
 
 
 def starting():

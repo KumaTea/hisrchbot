@@ -29,5 +29,11 @@ def is_valid_msg(message: Message) -> bool:
     return True
 
 
+async def add_msg_web_preview(message: Message) -> None:
+    # if message.has_web_preview:
+    # not implemented?
+    pass
+
+
 def clean_msg() -> None:
     text_store.clean_all()

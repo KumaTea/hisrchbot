@@ -100,19 +100,23 @@ class MsgTextStore:
         #             del self.msgs[chat_id]
         #             logging.warning(f'[bot.store]\tClearing inactive chat {chat_id}')
         #             cleared += 1
-        for chat_id in self.msgs:
+
+        # for chat_id in self.msgs:
+        # https://stackoverflow.com/questions/11941817
+        for chat_id in list(self.msgs):
             limit = GROUP_MSG_LIMIT if chat_id not in trusted_group else TRUSTED_GROUP_MSG_LIMIT
             if len(self.msgs[chat_id]) > limit:
-                msg_ids = self.msgs[chat_id].keys()
+                # msg_ids = self.msgs[chat_id].keys()
+                msg_ids = list(self.msgs[chat_id])
                 msg_ids = sorted(msg_ids)  # int
-                msg_ids = msg_ids[len(msg_ids) - limit:]
+                trimmed_msg_ids = msg_ids[len(msg_ids) - limit:]
 
                 # self.msgs[chat_id] = {k: v for k, v in self.msgs[chat_id].items() if k in msg_ids}
-                for msg_id in self.msgs[chat_id]:
-                    if msg_id not in msg_ids:
+                for msg_id in list(self.msgs[chat_id]):
+                    if msg_id not in trimmed_msg_ids:
                         del self.msgs[chat_id][msg_id]
 
-                logging.warning(f'[bot.store]\tCleaning messages for chat {chat_id}')
+                logging.warning(f'[bot.store]\tCleaned {len(msg_ids) - limit} messages for chat {chat_id}')
                 cleaned += 1
         if cleaned:
             self.save()

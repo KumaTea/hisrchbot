@@ -1,6 +1,6 @@
 FROM kumatea/bot:latest
 
-ENV CONDA_PKGS="apscheduler pyrogram uvloop"
+ENV CONDA_PKGS="aiohttp apscheduler beautifulsoup4 pyrogram uvloop"
 ENV PIP_PKGS="meilisearch tgcrypto"
 
 # Create conda environment
