@@ -1,8 +1,8 @@
 import logging
 import aiohttp
 from typing import Optional
-from pyrogram.types import Message
 from bs4 import BeautifulSoup
+from pyrogram.types import Message
 
 
 def get_content(message: Message) -> Optional[str]:

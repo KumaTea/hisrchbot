@@ -1,6 +1,9 @@
+from typing import Optional
 from bot.store import text_store
+from common.tools import find_url
 from pyrogram.types import Message
 from common.local import trusted_group
+from func.tools import aget_html, get_html_title_desc
 from common.data import MAX_MSG_LEN, TRUSTED_GROUP_MSG_LIMIT
 from pyrogram.enums.message_entity_type import MessageEntityType
 
@@ -29,10 +32,18 @@ def is_valid_msg(message: Message) -> bool:
     return True
 
 
-async def add_msg_web_preview(message: Message) -> None:
+async def add_msg_web_preview(message: Message) -> Optional[str]:
     # if message.has_web_preview:
     # not implemented?
-    pass
+    text = message.text or message.caption
+    url = find_url(text)
+    if not url:
+        return None
+    html = await aget_html(url)
+    if not html:
+        return None
+    title_desc = get_html_title_desc(html)
+    return title_desc
 
 
 def clean_msg() -> None:
