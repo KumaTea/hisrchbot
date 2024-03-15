@@ -1,15 +1,10 @@
-FROM kumatea/bot:latest
+FROM kumatea/pyrogram:latest
 
-ENV CONDA_PKGS="aiohttp apscheduler beautifulsoup4 pyrogram uvloop"
-ENV PIP_PKGS="meilisearch tgcrypto"
+ENV PIP_PKGS="aiohttp apscheduler beautifulsoup4 meilisearch pyrogram tgcrypto uvloop"
 
 # Create conda environment
 RUN set -ex && \
-    eval "$(/opt/conda/bin/conda shell.bash hook)" && \
-    conda create -n hs $CONDA_PKGS -y && \
-    conda clean -afy && \
-    conda activate hs && \
-    pip install $PIP_PKGS --prefer-binary --extra-index-url https://ext.kmtea.eu/cdn && \
+    pip install $PIP_PKGS --prefer-binary && \
     rm -rf /root/.cache/*
 
 

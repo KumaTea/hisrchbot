@@ -3,4 +3,4 @@
 set -ex
 
 cd /home/kuma/bots/hisrchbot
-/opt/conda/envs/hs/bin/python3 main.py
+python3 main.py

@@ -3,6 +3,7 @@ import aiohttp
 from typing import Optional
 from bs4 import BeautifulSoup
 from pyrogram.types import Message
+from common.data import USER_AGENT
 
 
 def get_content(message: Message) -> Optional[str]:
@@ -16,10 +17,15 @@ def get_content(message: Message) -> Optional[str]:
     return text[content_index + 1:]
 
 
-async def aget_html(url: str) -> Optional[str]:
+async def aget_html(url: str, user_agent: str = None) -> Optional[str]:
+    headers = {}
+    if user_agent:
+        headers['User-Agent'] = user_agent
+    else:
+        headers['User-Agent'] = USER_AGENT
     async with aiohttp.ClientSession() as session:
         try:
-            async with session.get(url) as response:
+            async with session.get(url, headers=headers) as response:
                 return await response.text()
         except aiohttp.ClientError as e:
             logging.error(str(e))

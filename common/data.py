@@ -50,3 +50,8 @@ USER_AGENT = (
     'Chrome/122.0.0.0 '
     'Safari/537.36'
 )
+
+TWITTER_USER_AGENT = (
+    # 'Twitterbot/1.0'
+    'TelegramBot (like TwitterBot)'
+)

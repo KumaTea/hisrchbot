@@ -61,6 +61,9 @@ async def search(message: Message, exact: bool = True) -> Optional[Message]:
     if not results:
         return await message.reply_text('未找到相关结果 🥺')
 
+    # sort by id in descending order
+    results = sorted(results, key=lambda x: int(x['id']), reverse=True)
+
     formatted_results = [
         format_result(search_term, result['text'], get_message_link(message.chat, result['id']))
         for result in results

@@ -4,8 +4,8 @@ from common.tools import find_url
 from pyrogram.types import Message
 from common.local import trusted_group
 from func.tools import aget_html, get_html_title_desc
-from common.data import MAX_MSG_LEN, TRUSTED_GROUP_MSG_LIMIT
 from pyrogram.enums.message_entity_type import MessageEntityType
+from common.data import MAX_MSG_LEN, TWITTER_USER_AGENT, TRUSTED_GROUP_MSG_LIMIT
 
 
 def is_valid_msg(message: Message) -> bool:
@@ -39,7 +39,13 @@ async def add_msg_web_preview(message: Message) -> Optional[str]:
     url = find_url(text)
     if not url:
         return None
-    html = await aget_html(url)
+
+    twi_urls = ['twitter.com', 'x.com', 't.co']
+    if any(twi_url in url for twi_url in twi_urls):
+        html = await aget_html(url, TWITTER_USER_AGENT)
+    else:
+        html = await aget_html(url)
+
     if not html:
         return None
     title_desc = get_html_title_desc(html)
