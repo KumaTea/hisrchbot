@@ -5,7 +5,7 @@ from pyrogram.types import Message
 from common.local import trusted_group
 from func.tools import aget_html, get_html_title_desc
 from pyrogram.enums.message_entity_type import MessageEntityType
-from common.data import MAX_MSG_LEN, TWITTER_USER_AGENT, TRUSTED_GROUP_MSG_LIMIT
+from common.data import MAX_MSG_LEN, TWITTER_USER_AGENT, TRUSTED_GROUP_MSG_LIMIT, valid_commands
 
 
 def is_valid_msg(message: Message) -> bool:
@@ -22,7 +22,7 @@ def is_valid_msg(message: Message) -> bool:
     limit = MAX_MSG_LEN if message.chat.id not in trusted_group else TRUSTED_GROUP_MSG_LIMIT
     if len(text) > limit:
         return False
-    if text.startswith('/'):
+    if text.startswith('/') and not any(text.startswith(cmd) for cmd in valid_commands):
         return False
     entities = message.entities or message.caption_entities
     if entities:

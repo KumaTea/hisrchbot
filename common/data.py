@@ -55,3 +55,5 @@ TWITTER_USER_AGENT = (
     # 'Twitterbot/1.0'
     'TelegramBot (like TwitterBot)'
 )
+
+valid_commands = {'/chat', '/smart'}

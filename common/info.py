@@ -3,8 +3,8 @@ import os
 
 self_id = 6874839911
 creator = 5273618487
-administrators = [345060487, creator]
-version = '1.0.2.90'
+administrators = {345060487, creator}
+version = '1.0.3.96'
 username = 'hisrchbot'
 self_name = 'Kuma History Search'
 
