@@ -1,6 +1,6 @@
 from pyrogram import Client
 from datetime import datetime
-from bot.auth import ensure_auth
+from share.auth import ensure_auth
 from pyrogram.types import Message
 from bot.store import text_store, time_store
 from func.messages import is_valid_msg, add_msg_web_preview

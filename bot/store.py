@@ -5,7 +5,7 @@ from datetime import datetime
 from bot.session import logging
 from dataclasses import dataclass
 from pyrogram.types import Message
-from common.local import trusted_group
+from share.local import trusted_group
 from common.data import msg_data_dir, GROUP_MSG_LIMIT, TRUSTED_GROUP_MSG_LIMIT
 
 

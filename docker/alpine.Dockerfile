@@ -5,7 +5,7 @@ ENV PIP_PKGS="aiohttp apscheduler beautifulsoup4 meilisearch"
 # Install packages
 RUN set -ex && \
     pip install $PIP_PKGS --prefer-binary --no-cache-dir && \
-    rm -rf /root/.cache || echo "No cache in .cache"
+    (rm -rf /root/.cache || echo "No cache in .cache")
 
 
 # Set entrypoint
