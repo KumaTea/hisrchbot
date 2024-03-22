@@ -26,7 +26,7 @@ async def clean_stale() -> None:
         chat_time = time_store.query(chat_id)
         last_msg_time = chat_time.last_msg_time
         if last_msg_time:
-            if (datetime.now() - last_msg_time).seconds < STALE_CHAT_TIME:
+            if (datetime.now() - last_msg_time).total_seconds() < STALE_CHAT_TIME:
                 continue
         await bot.leave_chat(chat_id)
         clean_chat(chat_id)
@@ -36,11 +36,12 @@ async def clean_stale() -> None:
         last_trigger_time = chat_time.last_trigger_time
         trigger_informed = chat_time.trigger_informed
         if trigger_informed:
-            if (datetime.now() - last_trigger_time).seconds > STALE_CHAT_TIME:
+            if (datetime.now() - last_trigger_time).total_seconds() > STALE_CHAT_TIME:
+                await bot.send_message(chat_id, '本 bot 已至少一个月未被使用，即将离开本群，再见。')
                 await bot.leave_chat(chat_id)
                 clean_chat(chat_id)
         else:
-            if (datetime.now() - last_trigger_time).seconds > STALE_CHAT_TIME // 2:
+            if (datetime.now() - last_trigger_time).total_seconds() > STALE_CHAT_TIME // 2:
                 # chat_time.trigger_informed = True
                 # don't know if this works
                 time_store.data[chat_id].trigger_informed = True
@@ -56,6 +57,6 @@ def is_remedial_trigger(chat_id: int) -> bool:
     if not trigger_informed:
         return False
     last_trigger_time = chat_time.last_trigger_time
-    if STALE_CHAT_TIME // 2 < (datetime.now() - last_trigger_time).seconds < STALE_CHAT_TIME // 2 + 60 * 60 * 24:
+    if STALE_CHAT_TIME // 2 < (datetime.now() - last_trigger_time).total_seconds() < STALE_CHAT_TIME // 2 + 60 * 60 * 24:
         return True
     return False

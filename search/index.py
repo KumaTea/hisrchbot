@@ -15,7 +15,7 @@ def need_update(chat_id: int) -> bool:
     last_index_time = chat_time.last_index_time
     if not last_index_time:
         return True
-    if (datetime.now() - last_index_time).seconds < INDEX_INTERVAL:
+    if (datetime.now() - last_index_time).total_seconds() < INDEX_INTERVAL:
         return False
     if last_msg_time > last_index_time:
         return True
