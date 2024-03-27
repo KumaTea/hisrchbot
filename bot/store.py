@@ -104,6 +104,12 @@ class MsgTextStore:
         # for chat_id in self.msgs:
         # https://stackoverflow.com/questions/11941817
         for chat_id in list(self.msgs):
+            if not self.msgs[chat_id]:
+                del self.msgs[chat_id]
+                logging.warning(f'[bot.store]\tClearing empty chat {chat_id}')
+                cleaned += 1
+                continue
+
             limit = GROUP_MSG_LIMIT if chat_id not in trusted_group else TRUSTED_GROUP_MSG_LIMIT
             if len(self.msgs[chat_id]) > limit:
                 # msg_ids = self.msgs[chat_id].keys()
@@ -123,8 +129,8 @@ class MsgTextStore:
 
     def clear_chat(self, chat_id: int) -> None:
         if chat_id in self.msgs and self.msgs[chat_id]:
-            # del self.msgs[chat_id]
-            self.msgs[chat_id] = {}
+            del self.msgs[chat_id]
+            # self.msgs[chat_id] = {}
             logging.warning(f'[bot.store]\tRemoving chat {chat_id}')
             self.save()
 

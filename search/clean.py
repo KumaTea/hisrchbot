@@ -2,6 +2,7 @@ import logging
 from bot.session import bot
 from bot.session import meili
 from datetime import datetime
+from share.local import trusted_group
 from common.data import STALE_CHAT_TIME
 from bot.store import text_store, time_store
 
@@ -23,6 +24,8 @@ async def clean_stale() -> None:
         logging.error(f'{diff_a=}, {diff_b=}')
 
     for chat_id in chat_ids_a:
+        if chat_id in trusted_group:
+            continue
         chat_time = time_store.query(chat_id)
         last_msg_time = chat_time.last_msg_time
         if last_msg_time:
@@ -32,6 +35,8 @@ async def clean_stale() -> None:
         clean_chat(chat_id)
 
     for chat_id in chat_ids_a:
+        if chat_id in trusted_group:
+            continue
         chat_time = time_store.query(chat_id)
         last_trigger_time = chat_time.last_trigger_time
         trigger_informed = chat_time.trigger_informed
