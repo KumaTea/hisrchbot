@@ -4,7 +4,7 @@ from handlers.functions import *
 from search.clean import clean_stale
 from bot.session import bot, scheduler
 from search.index import update_indexes
-from handlers.messages import save_msg, update_msg, delete_msgs
+from handlers.messages import process_msg, update_msg, delete_msgs
 from pyrogram.handlers import MessageHandler, EditedMessageHandler, DeletedMessagesHandler
 
 
@@ -15,7 +15,7 @@ def register_handlers():
     bot.add_handler(MessageHandler(command_unindex, filters.command(['unindex']) & filters.group))
 
     # group messages
-    bot.add_handler(MessageHandler(save_msg, filters.group))
+    bot.add_handler(MessageHandler(process_msg, filters.group))
     bot.add_handler(EditedMessageHandler(update_msg, filters.group))
     bot.add_handler(DeletedMessagesHandler(delete_msgs, filters.group))
 

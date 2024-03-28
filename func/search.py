@@ -4,10 +4,10 @@ from pyrogram.types import Chat
 from bot.store import time_store
 from share.auth import ensure_auth
 from func.tools import get_content
-from pyrogram.types import Message
 from search.core import search_core
-from common.data import MAX_RESULT_LEN
 from search.clean import is_remedial_trigger
+from pyrogram.types import Message, ForceReply
+from common.data import MAX_RESULT_LEN, SEARCH_PLACEHOLDER, WHAT_TO_SEARCH, NO_SEARCH_TERM
 
 
 def get_message_link(chat: Chat, msg_id: int) -> str:
@@ -48,8 +48,22 @@ def format_result(term: str, result: str, msg_link: str):
 async def search(message: Message, exact: bool = True) -> Optional[Message]:
     search_term = get_content(message)
     if not search_term:
-        return await message.reply_text('未输入搜索词 😡')
+        return await message.reply_text(
+            WHAT_TO_SEARCH,
+            reply_markup=ForceReply(selective=True, placeholder=SEARCH_PLACEHOLDER)
+        )
 
+    return await search_process(message, search_term, exact)
+
+
+async def reply_search(message: Message, exact: bool = True) -> Optional[Message]:
+    search_term = message.text
+    if not search_term:
+        return await message.reply_text(NO_SEARCH_TERM)
+    return await search_process(message, search_term, exact)
+
+
+async def search_process(message: Message, search_term: str, exact: bool = True) -> Optional[Message]:
     chat_id = message.chat.id
     search_result = search_core(chat_id, search_term, exact_search=exact)
 

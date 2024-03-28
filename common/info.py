@@ -4,7 +4,7 @@ import os
 self_id = 6874839911
 creator = 5273618487
 administrators = {345060487, creator}
-version = '1.0.3.103'
+version = '1.0.4.108'
 username = 'hisrchbot'
 self_name = 'Kuma History Search'
 

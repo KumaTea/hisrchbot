@@ -44,6 +44,10 @@ enter_group_zh = (
 
 unknown_message = "I can't understand your message or command. You may try /help."
 
+WHAT_TO_SEARCH = '搜什么？'
+SEARCH_PLACEHOLDER = '输入搜索词...'
+NO_SEARCH_TERM = '未输入搜索词 😡'
+
 USER_AGENT = (
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
     'AppleWebKit/537.36 (KHTML, like Gecko) '
