@@ -131,7 +131,7 @@ class MsgTextStore:
         if chat_id in self.msgs and self.msgs[chat_id]:
             del self.msgs[chat_id]
             # self.msgs[chat_id] = {}
-            logging.warning(f'[bot.store]\tRemoving chat {chat_id}')
+            logging.warning(f'[bot.store]\tDeleting messages for chat {chat_id}')
             self.save()
 
     def chat_to_json(self, chat_id: int) -> list:
@@ -195,6 +195,8 @@ class MsgTimeStore:
     def delete(self, chat_id: int) -> None:
         if chat_id in self.data:
             del self.data[chat_id]
+            logging.warning(f'[bot.store]\tDeleting time data for chat {chat_id}')
+            self.save()
 
     def save(self) -> None:
         with open(f'{msg_data_dir}/time.p', 'wb') as f:
